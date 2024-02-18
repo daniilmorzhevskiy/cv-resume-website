@@ -24,11 +24,19 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Push changes
+        run: |
+          git config --global user.email "daniil.morzhevskiy@gmail.com"
+          git config --global user.name "Daniil"
+          git add .
+          git commit -m "Pushing all available files"
+          git push
+
       - name: Deploy to S3
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read --follow-symlinks --delete
-        env:
+        env:          
           AWS_S3_BUCKET: http://epam-aws-fundamentals-task-danylo-morzhevskyi.s3-website-us-east-1.amazonaws.com
           AWS_ACCESS_KEY_ID: AKIAVERQWTT3QS4KR2GI
           AWS_SECRET_ACCESS_KEY: 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
