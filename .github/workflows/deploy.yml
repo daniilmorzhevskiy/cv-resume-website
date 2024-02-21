@@ -1,42 +1,19 @@
-name: Deploy to S3
+name: Upload Website
 
 on:
   push:
     branches:
-      - main
+    - master
 
 jobs:
-  deploy:
+  deploy-site:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v2
+      - uses: jakejarvis/s3-sync-action@master
         with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-      - name: Push changes
-        run: |
-          git config --global user.email "daniil.morzhevskiy@gmail.com"
-          git config --global user.name "Daniil"
-          git add .
-          git commit -m "Pushing all available files"
-          git push
-
-      - name: Deploy to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read --follow-symlinks --delete
+          args: --delete
         env:          
           AWS_S3_BUCKET: http://epam-aws-fundamentals-task-danylo-morzhevskyi.s3-website-us-east-1.amazonaws.com
-          AWS_ACCESS_KEY_ID: AKIAVERQWTT3QS4KR2GI
-          AWS_SECRET_ACCESS_KEY: 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
+          AWS_ACCESS_KEY_ID: AKIAVERQWTT3WWDVCM5N
+          AWS_SECRET_ACCESS_KEY: 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
