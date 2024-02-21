@@ -14,7 +14,7 @@ jobs:
         with:
           args: --delete
         env:          
-          AWS_S3_BUCKET: epam-aws-fundamentals-task-danylo-morzhevskyi.s3-website-us-east-1.amazonaws.com
+          AWS_S3_BUCKET: epam-aws-fundamentals-task-danylo-morzhevskyi
           AWS_ACCESS_KEY_ID: AKIAVERQWTT3WWDVCM5N
           AWS_SECRET_ACCESS_KEY: 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
           SOURCE_DIR: .
