@@ -1,2 +1,6 @@
 .DS_Store
 charts/**/charts
+argocd-clusterrole.yaml
+argocd-clusterrolebinding.yaml
+argocd-cm.yaml
+flask-jenkins-compose.yaml
