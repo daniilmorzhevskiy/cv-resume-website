@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+  namespace: default  # Replace with your namespace if needed
+  labels:
+    app: flask-app
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+      - name: dmo-cv-project-flask-app-container
+        image: daniilsd/cv-project:v1.1.2  # Update with the correct image path
+        ports:
+        - containerPort: 5000  # Flask default port
+        # env:
+        # - name: ENV_VAR_NAME  # Example of an environment variable
+          # value: "value"
+        resources:  # Optionally define CPU and memory limits
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        livenessProbe:  # Optional, ensures the container is healthy
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:  # Optional, ensures the app is ready to receive traffic
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      restartPolicy: OnFailure
