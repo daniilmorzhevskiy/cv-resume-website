@@ -42,4 +42,4 @@ spec:
             port: 5000
           initialDelaySeconds: 30
           periodSeconds: 10
-      restartPolicy: OnFailure
+      restartPolicy: Always
