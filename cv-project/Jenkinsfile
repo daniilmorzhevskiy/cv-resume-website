@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = "daniilsd"  // dockerhub reg name
+        APP_NAME = "cv-project"       // name of build and app in dockerhub
+        BASE_VERSION = "1.1"          // Base v.
+    }
+
+    stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    env.NEW_VERSION = "${BASE_VERSION}.${BUILD_NUMBER}"
+                    echo "New version: ${env.NEW_VERSION}"
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'docker build -t ${DOCKER_REGISTRY}/${APP_NAME}:${NEW_VERSION} .'
+            }
+        }
+
+        stage('Push') {
+            steps {
+                sh 'docker push ${DOCKER_REGISTRY}/${APP_NAME}:${NEW_VERSION}'
+            }
+        }
+
+        stage('Update Kubernetes Manifest') {
+            steps {
+                sh """
+                sed -i 's@image: ${DOCKER_REGISTRY}/${APP_NAME}:.*@image: ${DOCKER_REGISTRY}/${APP_NAME}:${NEW_VERSION}@' dmo-cv-project-deployment.yaml
+                git config user.email "jenkins@example.com"
+                git config user.name "Jenkins"
+                git add dmo-cv-project-deployment.yaml
+                git commit -m "Update image to ${APP_NAME}:${NEW_VERSION}"
+                git push origin master
+                """
+            }
+        }
+
+        stage('Deploy with ArgoCD') {
+            steps {
+                sh 'kubectl apply -f dmo-cv-project-deployment.yaml'
+            }
+        }
+    }
+}
